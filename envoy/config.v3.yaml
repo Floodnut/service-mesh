@@ -15,7 +15,7 @@ static_resources:
         port_value: 10000 # 임의의 Envoy Listener Port(http)
     filter_chains:
     - filters:
-      - name: envoy.http_connection_manager
+      - name: envoy.filters.network.http_connection_manager
         typed_config:
           "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
           stat_prefix: ingress_http
@@ -30,15 +30,17 @@ static_resources:
                 route:
                   cluster: service_api
                   prefix_rewrite: "/"
-                  host_rewrite: "www.google.com"
+                  host_rewrite_literal: "www.google.com"
               - match:
                   prefix: "/argocd"
                 route:
                   cluster: service_argocd
                   prefix_rewrite: "/"
-                  host_rewrite: "www.naver.com"
+                  host_rewrite_literal: "www.naver.com"
           http_filters:
-          - name: envoy.router
+          - name: envoy.filters.http.router
+            typed_config:
+             "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
   clusters: # grouping 된 타겟, K8s Cluster가 아님
   - name: service_api
     connect_timeout: 10s
@@ -55,8 +57,11 @@ static_resources:
               socket_address:
                 address: www.google.com
                 port_value: 443
-    tls_context:
-      sni: www.google.com
+    transport_socket:
+      name: envoy.transport_sockets.tls
+      typed_config:
+        "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+        sni: www.google.com
   - name: service_argocd
     connect_timeout: 10s
     type: LOGICAL_DNS
@@ -72,5 +77,8 @@ static_resources:
               socket_address:
                 address: www.naver.com
                 port_value: 443
-    tls_context:
-      sni: www.naver.com
+    transport_socket:
+      name: envoy.transport_sockets.tls
+      typed_config:
+        "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+        sni: www.naver.com
