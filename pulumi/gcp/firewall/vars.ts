@@ -1,6 +1,5 @@
-import { Vars } from "../../common/vars";
-
-export class FirewallVars extends Vars {
+export interface FirewallVars {
+    name: string;
     network: string;
     direction?: string | "INGRESS";
     description?: string;
@@ -22,7 +21,7 @@ export class FirewallVars extends Vars {
 }
 
 export const vars: FirewallVars = {
-    name: "firewall",
+    name: "demno",
     network: "default",
     direction: "INGRESS",
     disabled: false,

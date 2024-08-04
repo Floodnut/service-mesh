@@ -5,8 +5,8 @@ import { vars } from "./vars";
 
 const resourcePrefix = "firewall";
 
-const firewall = new gcp.compute.Firewall(name({prefix: resourcePrefix, alias: "demo"}), {
-    name: name({prefix: resourcePrefix, alias: "demo"}),
+const firewall = new gcp.compute.Firewall(name({prefix: resourcePrefix, alias: vars.name}), {
+    name: name({prefix: resourcePrefix, alias: vars.name}),
     network: vars.network,
     sourceRanges: vars.direction == "INGRESS" ? vars.ranges : undefined,
     destinationRanges : vars.direction == "EGRESS" ? vars.ranges : undefined,

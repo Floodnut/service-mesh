@@ -1,6 +1,5 @@
-import { Vars } from "../../common/vars";
-
-export class GCSVars extends Vars {
+export class GCSVars {
+    name: string;
     location: string;
     class?: string | "STANDARD";
     website?: {
@@ -12,9 +11,11 @@ export class GCSVars extends Vars {
         method: string[];
         responseHeader: string[];
     };
+    iam?: GCSBucketIAMMemberVars[];
 }
 
-export class GCSBucketIAMMemberVars extends Vars {
+export interface GCSBucketIAMMemberVars {
+    name: string;
     role: string;
     member: string;
     condition?: {
@@ -26,11 +27,12 @@ export class GCSBucketIAMMemberVars extends Vars {
 
 export const vars: GCSVars = {
     name: "gcs",
-    location: ""
-}
-
-export const iamVars: GCSBucketIAMMemberVars = {
-    name: "demo",
-    role: "roles/storage.objectViewer",
-    member: "allUsers",
+    location: "",
+    iam: [
+        {
+            name: "demo",
+            role: "roles/storage.objectViewer",
+            member: "allUsers",
+        }
+    ] as GCSBucketIAMMemberVars[]
 }

@@ -1,15 +1,15 @@
-
-import { Vars } from "../../common/vars";
 import { name } from "../../common/util";
 
-export class ContainerNodePoolVars extends Vars {
+export interface ContainerNodePoolVars {
+    name: string;
     nodeCount: number;
     machineType: string;
     nodeLocations: string[];
     diskSizeGb: number;
 }
 
-export class GKEVars extends Vars { // Google Container Cluster
+export interface GKEVars { // Google Container Cluster
+    name: string;
     location: string;
     network: string;
     subnet: string;
