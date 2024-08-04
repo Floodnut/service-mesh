@@ -1,0 +1,4 @@
+export enum NETWORKING_MODE {
+    VPC_NATIVE = "VPC_NATIVE",
+    ROUTES = "ROUTES",
+}
