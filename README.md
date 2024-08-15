@@ -4,6 +4,7 @@
 1. helm repo
 ```sh
 helm repo add istio https://istio-release.storage.googleapis.com/charts
+helm repo add kiali https://kiali.org/helm-charts
 helm repo update
 
 # If you want to write and release charts.
@@ -52,7 +53,10 @@ istioctl install -f istio-cni.yaml -y
 
 5. install istiod-service with helm
 ```sh
-helm install istiod istio/istiod -n istio-system --wait
+helm install istiod istio/istiod -n istio-system --set values.meshConfig.defaultConfig.tracing.zipkin.address="tempo.monitoring.svc.cluster.local:9411" --wait
+
+# Jaeger addon
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.23/samples/addons/jaeger.yaml
 
 # if you use cni
 helm install istiod istio/istiod -n istio-system --set pilot.cni.enabled=true --wait
@@ -72,6 +76,24 @@ helm install istio-ingress istio/gateway -n istio-ingress --wait
 8. istio injection
 ```sh
 kubectl label namespace default istio-injection=enabled   
+```
+
+9. install istio-ingressgwateway
+```sh
+kubectl create namespace istio-ingress
+helm install istio-ingressgateway istio/gateway -n istio-ingress --wait
+helm install istio-ingress istio/gateway -n istio-system --wait
+```
+
+10. install kiali
+```sh
+helm install \
+    --namespace istio-system \
+    --set external_services.tracing.in_cluster_url=http://tempo.monitoring.svc.cluster.local:16685 \
+    --set external_services.tracing.url=http://localhost:16686 \
+    --set auth.strategy=anonymous \
+    kiali-server \
+    kiali/kiali-server
 ```
 
 ## Linkerd
