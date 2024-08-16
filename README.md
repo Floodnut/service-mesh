@@ -62,6 +62,11 @@ kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.23/samp
 helm install istiod istio/istiod -n istio-system --set pilot.cni.enabled=true --wait
 ```
 
+```sh
+# prometheus addon
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.20/samples/addons/prometheus.yaml -n istio-system
+```
+
 6. Check `istiod` Service
 ```sh
 kubectl get deployments -n istio-system --output wide
